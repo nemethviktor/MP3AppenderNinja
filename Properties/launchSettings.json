@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MP3AppenderNinja": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"d:\\Downloads\\ffmpeg-master-latest-win64-gpl-shared\\bin\\ffmpeg.exe\" -p \"d:\\Torrents\\Warhammer 40k The Horus Heresy - test\\\""
+    }
+  }
+}
