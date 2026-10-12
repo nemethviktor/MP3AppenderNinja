@@ -10,6 +10,12 @@
     <Company>Viktor Nemeth</Company>
     <Copyright>By Viktor Nemeth -- Apache License 2.0</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
+
+    <!-- Single-file, framework-dependent exe (needs the .NET 8 runtime, as per README). -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,5 +41,10 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+
+  <!-- A Release build also publishes, so a ready-to-run single exe lands in bin/Release/net8.0-windows/win-x64/publish/ -->
+  <Target Name="PublishAfterReleaseBuild" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And '$(_IsPublishing)' != 'true'">
+    <CallTarget Targets="Publish" />
+  </Target>
 
 </Project>

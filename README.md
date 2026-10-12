@@ -23,6 +23,9 @@ As mentioned above you need to run the exe file. This is a console app (aka no G
 - The main _to-note_ is that the script isn't really foolproof and it's unlikely I'll ever cater for that. The assumption is that the files aren't locked, they aren't read-only [in other words turn off your torrent client], the script (technically the user running it) has read/write access to whatever folder and so on. 
 	- I'd generally suggest not running the script with a target on a Google Drive/OneDrive folder because those clients can *really* interfere w/ write-operations.
 	
+- `-f` is optional and defaults to `C:\Program Files\FFMpeg\bin\ffmpeg.exe`. `-k` keeps the original files instead of deleting them. `--help` lists all options.
+- If the root has subfolders (at any depth) each one is merged separately and mp3s sitting directly in the root are ignored; if it has none, the root itself is merged.
+
 ### Sorting
 
 - There's some logic to attempt re-sort files. The issue is that if you have files like `whatever chapter 1.mp3` and `whatever chapter 2.mp3` and `whatever chapter 10.mp3` and `whatever chapter 11.mp3` then you'll have a sorting problem because `1` and `10` are strings, not numbers in the world of Windows so there's a fair bit of code that goes in to changing anything that looks like a number to a 3-padded (aka `1` becomes `001` --> `whatever chapter 001.mp3`). This works in most cases.
@@ -31,5 +34,11 @@ As mentioned above you need to run the exe file. This is a console app (aka no G
 ### Errors
 
 - The app only works with mp3 files, this is a feature, not a bug.
+- Originals are only deleted after ffmpeg succeeded and the merged file was written. The merge is first written to `<folder>.merging.tmp` and renamed to `<folder>.mp3` on success, so a failed run leaves your files alone. If any folder fails the app prints why and exits with code 1.
+- Filenames containing a `|` can't be merged (ffmpeg's concat syntax uses it as a separator); that folder is skipped with a message. Rename the file and re-run.
 - It's likely you'll see something in the output such as `Audio packet of size 215 (starting with 00610069...) is invalid, writing it anyway.` - this isn't a bug either, ffmpeg does it own things
 - The duration of the output file may be misreported by some players. Again this is a thing of ffmpeg but from what I gather the alternatives don't do a better job on the merge either.
+
+## Building from source
+
+`dotnet build -c Release` also publishes a single-file exe (needs the .NET 8 runtime) to `bin\Release\net8.0-windows\win-x64\publish\MP3AppenderNinja.exe`. No separate publish step is needed.
